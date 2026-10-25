@@ -130,7 +130,7 @@ export class SuiVaultSDK {
     const discount = discountPercent ? BigInt(parseUnits(discountPercent, 4)) :
       BigInt(await this.getAssetInfo(assetType).then((info) => info.minDiscount));
 
-    const msToDeadline = daysValid ? BigInt(Number(daysValid) * 86400) * 1000n :
+    const msToDeadline = daysValid ? BigInt(Math.round(Number(daysValid) * 86400)) * 1000n :
       BigInt(await this.getAssetInfo(assetType).then((info) => info.minimumMsToDeadline));
 
     const withdrawTx = new Transaction();
