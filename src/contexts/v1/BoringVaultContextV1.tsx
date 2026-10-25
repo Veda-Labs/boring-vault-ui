@@ -1346,9 +1346,10 @@ export const BoringVaultV1Provider: React.FC<{
                 maxLoss: Number(status.maxLoss) / 100,
                 maturity: Number(status.maturity),
                 shares: Number(status.shares) / Math.pow(10, vaultDecimals),
+                // Rate is the accountant's getRateInQuoteSafe(token): token decimals
                 exchangeRateAtTimeOfRequest:
                   Number(status.exchangeRateAtTimeOfRequest) /
-                  Math.pow(10, vaultDecimals),
+                  Math.pow(10, token.decimals),
                 token: token,
               } as DelayWithdrawStatus;
             })
@@ -1896,19 +1897,21 @@ export const BoringVaultV1Provider: React.FC<{
 
           // Format the status object
           return openRequests.map((request: any) => {
+            const tokenOut = withdrawTokens.find(
+              (token) =>
+                token.address.toLowerCase() ===
+                request["wantToken"].toLowerCase()
+            )!;
             return {
               sharesWithdrawing: Number(request["amount"]) / 10 ** vaultDecimals,
               blockNumberOpened: Number(request["blockNumber"]),
               deadlineUnixSeconds: Number(request["deadline"]),
               errorCode: Number(request["errorCode"]),
-              minSharePrice: Number(request["minPrice"]) / 10 ** vaultDecimals,
+              // atomicPrice is in want (tokenOut) decimals
+              minSharePrice: Number(request["minPrice"]) / 10 ** tokenOut.decimals,
               timestampOpenedUnixSeconds: Number(request["timestamp"]),
               transactionHashOpened: request["transactionHash"],
-              tokenOut: withdrawTokens.find(
-                (token) =>
-                  token.address.toLowerCase() ===
-                  request["wantToken"].toLowerCase()
-              )!,
+              tokenOut,
             } as WithdrawQueueStatus;
           });
         } catch (error) {
@@ -2464,16 +2467,18 @@ export const BoringVaultV1Provider: React.FC<{
 
           // Format the status object
           return allRequests.map((request: any) => {
+            const tokenOut = withdrawTokens.find(
+              (token) =>
+                token.address.toLowerCase() ===
+                request["wantToken"].toLowerCase()
+            )!;
             return {
               nonce: Number(request["metadata"]["nonce"]),
               user: request["user"],
-              tokenOut: withdrawTokens.find(
-                (token) =>
-                  token.address.toLowerCase() ===
-                  request["wantToken"].toLowerCase()
-              )!,
+              tokenOut,
               sharesWithdrawing: Number(request["metadata"]["amountOfShares"]) / 10 ** vaultDecimals,
-              assetsWithdrawing: Number(request["metadata"]["amountOfAssets"]) / 10 ** vaultDecimals,
+              // amountOfAssets is in assetOut (tokenOut) decimals
+              assetsWithdrawing: Number(request["metadata"]["amountOfAssets"]) / 10 ** tokenOut.decimals,
               creationTime: Number(request["metadata"]["creationTime"]),
               secondsToMaturity: Number(request["metadata"]["secondsToMaturity"]),
               secondsToDeadline: Number(request["metadata"]["secondsToDeadline"]),

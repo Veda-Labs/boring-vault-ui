@@ -228,14 +228,14 @@ const App = () => {
               ]}
               withdrawTokens={[
                 {
-                  address: "0xA0b86a33E6441b8e37Cc9CDEb84C3F6E2F1C9Aa8", // USDC
+                  address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // USDC
                   decimals: 6,
                   displayName: "USDC",
                   image: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
                 },
               ]}
               baseAsset={{
-                address: "0xA0b86a33E6441b8e37Cc9CDEb84C3F6E2F1C9Aa8", // USDC as base
+                address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // USDC as base
                 decimals: 6,
                 displayName: "USDC",
                 image: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
